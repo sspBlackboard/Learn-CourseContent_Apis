@@ -1,0 +1,293 @@
+{
+	"info": {
+		"_postman_id": "363ba83b-a8e3-4ce9-9205-08d26a5e9353",
+		"name": "Learn-Apis-Placements",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23304628"
+	},
+	"item": [
+		{
+			"name": "learn-get-token",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{domain}}/learn/api/public/v1/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"learn",
+						"api",
+						"public",
+						"v1",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "learn-get-placement",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authorization}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{domain}}/learn/api/public/v1/lti/placements/{{placementId-get}}",
+					"protocol": "https",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"learn",
+						"api",
+						"public",
+						"v1",
+						"lti",
+						"placements",
+						"_1_1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "learn-get-all-placements",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authorization}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{domain}}/learn/api/public/v1/lti/placements",
+					"protocol": "https",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"learn",
+						"api",
+						"public",
+						"v1",
+						"lti",
+						"placements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "learn-post-placement",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authorization}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"sample-name\",\n  \"handle\": \"sample-handler\",\n  \"type\": \"sample-type\",\n  \"url\": \"sample-url\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{domain}}/learn/api/public/v1/lti/placements",
+					"protocol": "https",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"learn",
+						"api",
+						"public",
+						"v1",
+						"lti",
+						"placements"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "learn-delete-placement",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authorization}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "https://{{domain}}/learn/api/public/v1/lti/placements/{{placementId-delete}}",
+					"protocol": "https",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"learn",
+						"api",
+						"public",
+						"v1",
+						"lti",
+						"placements",
+						"_16_1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "learn-patch-placement",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authorization}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"updated-name\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{domain}}/learn/api/public/v1/lti/placements/{{placementId-patch}}",
+					"protocol": "https",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"learn",
+						"api",
+						"public",
+						"v1",
+						"lti",
+						"placements",
+						"{{placementId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "username",
+			"value": "$APP_KEY",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "$APP_SECRET",
+			"type": "string"
+		},
+		{
+			"key": "authorization",
+			"value": "$ACCESSTOKEN",
+			"type": "string"
+		},
+		{
+			"key": "domain",
+			"value": "$LEARN_DOMAIN",
+			"type": "string"
+		},
+		{
+			"key": "placementId-get",
+			"value": "$PLACEMENT_ID_GET",
+			"type": "string"
+		},
+		{
+			"key": "placementId-delete",
+			"value": "$PLACEMENT_ID_DEL",
+			"type": "string"
+		},
+		{
+			"key": "placementId-patch",
+			"value": "$PLACEMENT_ID_PATCH",
+			"type": "string"
+		}
+	]
+}

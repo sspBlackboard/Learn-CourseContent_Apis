@@ -1,0 +1,568 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "3900.25.0",
+    "title": "Learn APIs"
+  },
+  "host": "localhost",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "basic": {
+      "description": "The application key and secret, encoded using RFC 2617 Basic authentication.",
+      "type": "basic"
+    },
+    "bearer": {
+      "description": "OAuth2 bearer token, obtained by sending a client_credentials grant request to /learn/api/public/v1/oauth2/token",
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "paths": {
+    "/learn/api/public/v1/oauth2/token": {
+      "post": {
+        "tags": [
+          "oauth"
+        ],
+        "summary": "Request Token",
+        "description": "Requests an OAuth 2 access token.\n\n**Since**: 2015.11.0",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/OAuth2AccessTokenRequestParam.grant_type"
+          },
+          {
+            "$ref": "#/parameters/OAuth2AccessTokenRequestParam.code"
+          },
+          {
+            "name": "redirect_uri",
+            "in": "query",
+            "description": "The redirectUri to send the end user to once an access token response is made in Oauth2 Authorization Code Workflow\n\n**Since**: 3200.7.0",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "refresh_token",
+            "in": "query",
+            "description": "The refresh token granted for use by an application in Oauth2 Refresh Token Workflow\n\n**Since**: 3200.7.0",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "code_verifier",
+            "in": "query",
+            "description": "The code_verifier to be passed along with authorization code if PKCE standard was used to grant the authorization code.\n\n**Since**: 3700.4.0",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/OAuth2AccessToken"
+            }
+          },
+          "400": {
+            "description": "Invalid access token request.",
+            "schema": {
+              "$ref": "#/definitions/OAuth2Error"
+            }
+          },
+          "401": {
+            "description": "Invalid client credentials, or no access granted to this Learn server.",
+            "schema": {
+              "$ref": "#/definitions/OAuth2Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ]
+      }
+    },
+    "/learn/api/public/v1/lti/placements": {
+      "get": {
+        "tags": [
+          "lti"
+        ],
+        "summary": "Get Placements",
+        "description": "Returns a list of LTI placements\n\nSupports the standard paging and sorting query parameters, with a maximum page size of 1000.\n\n**Since**: 3300.0.0",
+        "parameters": [
+          {
+            "$ref": "#/parameters/RowBasedPagingParams.offset"
+          },
+          {
+            "$ref": "#/parameters/RowBasedPagingParams.limit"
+          },
+          {
+            "name": "handle",
+            "in": "query",
+            "description": "Search for placements with handle properties that contain this value.\n\n**Since**: 3200.12.0",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Search for placements with name properties that contain this value.\n\n**Since**: 3200.12.0",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Search for placements with type properties that contain this value.\n\n**Since**: 3200.12.0\n\n\n| Type      | Description\n | --------- | --------- |\n| Application | Application or Student Tool Placement |\n| ContentHandler | Content Type placement |\n| ContentItemMessage | Content-item Message placement (see IMSGlobal spec)  **Since**: 3300.5.0 |\n| System | System-level Tools |\n| Administrator | Administrator-level Tools  **Since**: 3400.1.0 |\n| UltraUI | Ultra-UI Extensions  **Since**: 3700.6.0 |\n| BaseNavigation | Base Navigation |\n| CourseNavigation | Course Navigation |\n| Proctoring | Proctoring  **Since**: 3900.10.0 |\n",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "Application",
+              "ContentHandler",
+              "ContentItemMessage",
+              "System",
+              "Administrator",
+              "UltraUI",
+              "BaseNavigation",
+              "CourseNavigation",
+              "Proctoring"
+            ]
+          },
+          {
+            "name": "authorId",
+            "in": "query",
+            "description": "Search for placements with author ID properties that contain this value.\n\n**Since**: 3200.12.0\n\n**Deprecated**: since 3900.0.0; Field was never used and has been removed",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "courseId",
+            "in": "query",
+            "description": "Search for LTI placements that are available for this course. Note this only applies to Application, ContentHandler, and ContentItemMessage types currently\n\n**Since**: 3900.0.0",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Properties to sort by. This is a comma-delimited list of JSON properties, with an optional \"(desc)\" suffix to request a descending sort for that property. e.g. \"name.family(desc),created\"\n\n**Since**: 3100.0.0",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/fields"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/LTIPlacement"
+                  }
+                },
+                "paging": {
+                  "$ref": "#/definitions/PagingInfo"
+                }
+              },
+              "required": [
+                "results"
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/RestException"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/RestException"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "lti"
+        ],
+        "summary": "Create Placement",
+        "description": "Creates an LTI placement\n\nThe 'system.administration.VIEW' entitlement is required to create placements\n\n**Since**: 3300.0.0",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "input",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "handle",
+                "name",
+                "type",
+                "url"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the placement. Not required to be unique. Maximum length of 50 characters, BAD_REQUEST error with message is returned if greater than 50 characters.",
+                  "maxLength": 50
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The description of the placement. Not required to be unique. Maximum length is 1000 characters, BAD_REQUEST error with message is returned if greater than 1000 characters.",
+                  "maxLength": 1000
+                },
+                "iconUrl": {
+                  "type": "string",
+                  "description": "The URL of the icon for this placement, if any. Not required to be unique, must be a complete and valid URL. Maximum length is 255 characters, BAD_REQUEST error with message is returned if greater than 255 characters or incomplete URL.",
+                  "maxLength": 255
+                },
+                "handle": {
+                  "type": "string",
+                  "description": "The handle that uniquely identifies this placement. Required to be unique. Maximum length is 32 characters, BAD_REQUEST error with message is returned if greater than 32 characters.",
+                  "maxLength": 32
+                },
+                "type": {
+                  "type": "string",
+                  "description": "The type of placement.\n\n\n| Type      | Description\n | --------- | --------- |\n| Application | Application or Student Tool Placement |\n| ContentHandler | Content Type placement |\n| ContentItemMessage | Content-item Message placement (see IMSGlobal spec)  **Since**: 3300.5.0 |\n| System | System-level Tools |\n| Administrator | Administrator-level Tools  **Since**: 3400.1.0 |\n| UltraUI | Ultra-UI Extensions  **Since**: 3700.6.0 |\n| BaseNavigation | Base Navigation |\n| CourseNavigation | Course Navigation |\n| Proctoring | Proctoring  **Since**: 3900.10.0 |\n",
+                  "enum": [
+                    "Application",
+                    "ContentHandler",
+                    "ContentItemMessage",
+                    "System",
+                    "Administrator",
+                    "UltraUI",
+                    "BaseNavigation",
+                    "CourseNavigation",
+                    "Proctoring"
+                  ]
+                },
+                "url": {
+                  "type": "string",
+                  "description": "The URL of the tool provider. Not required to be unique, must be a complete and valid URL. Maximum length is 1024 characters, BAD_REQUEST error with message is returned if greater than 1024 characters or incomplete URL.",
+                  "maxLength": 1024
+                },
+                "key": {
+                  "type": "string"
+                },
+                "secret": {
+                  "type": "string"
+                },
+                "authorId": {
+                  "type": "string",
+                  "description": "Id of the creator of the placement\n\n**Deprecated**: since 3900.0 not used"
+                },
+                "instructorCreated": {
+                  "type": "boolean",
+                  "description": "Whether an instructor created the placement or not (otherwise admin)\n\n**Deprecated**: since 3900.0 not used"
+                },
+                "allowStudents": {
+                  "type": "boolean",
+                  "description": "Whether the course tool is visible by students, or only to non-students (e.g. instructors). Defaults to true, allowing students to see the tool."
+                },
+                "allowGrading": {
+                  "type": "boolean",
+                  "description": "Whether this placement can accept grades from the tool provider and a grade column can be created for it. This only applies to Enum[Type]#`ContentHandler` types. All others don't support grading and will be set to false."
+                },
+                "availability": {
+                  "type": "object",
+                  "description": "Settings controlling availability of the placement.",
+                  "title": "Availability",
+                  "properties": {
+                    "available": {
+                      "type": "string",
+                      "description": "Whether the placement is available within the system.\n\n\n| Type      | Description\n | --------- | --------- |\n| Yes |  |\n| No |  |\n",
+                      "enum": [
+                        "Yes",
+                        "No"
+                      ]
+                    }
+                  }
+                },
+                "launchInNewWindow": {
+                  "type": "boolean",
+                  "description": "Whether this placement link should be opened in a new window or not."
+                },
+                "customParameters": {
+                  "type": "object",
+                  "example": {
+                    "key1": "value1",
+                    "key2": "value2"
+                  },
+                  "description": "Custom launch parameters for the tool.",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/LTIPlacement"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/RestException"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/RestException"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/RestException"
+            }
+          }
+        }
+      }
+    },
+    "/learn/api/public/v1/lti/placements/{placementId}": {
+      "get": {
+        "tags": [
+          "lti"
+        ],
+        "summary": "Get Placement",
+        "description": "Returns the LTI placement with the specified Id\n\n**Since**: 3300.0.0",
+        "parameters": [
+          {
+            "name": "placementId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/fields"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/LTIPlacement"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/RestException"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/RestException"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "lti"
+        ],
+        "summary": "Delete Placement",
+        "description": "Deletes an LTI placement with the specified Id\n\nThe 'system.administration.VIEW' entitlement is required to delete placements\n\n**Since**: 3300.0.0",
+        "parameters": [
+          {
+            "name": "placementId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "$ref": "#/parameters/fields"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/RestException"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/RestException"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/RestException"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "lti"
+        ],
+        "summary": "Update Placement",
+        "description": "Updates an LTI placement with the given Id\n\nThe 'system.administration.VIEW' entitlement is required to update placements\n\n**Since**: 3300.0.0",
+        "parameters": [
+          {
+            "name": "placementId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "input",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the placement. Not required to be unique. Maximum length of 50 characters, BAD_REQUEST error with message is returned if greater than 50 characters.",
+                  "maxLength": 50
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The description of the placement. Not required to be unique. Maximum length is 1000 characters, BAD_REQUEST error with message is returned if greater than 1000 characters.",
+                  "maxLength": 1000
+                },
+                "iconUrl": {
+                  "type": "string",
+                  "description": "The URL of the icon for this placement, if any. Not required to be unique, must be a complete and valid URL. Maximum length is 255 characters, BAD_REQUEST error with message is returned if greater than 255 characters or incomplete URL.",
+                  "maxLength": 255
+                },
+                "url": {
+                  "type": "string",
+                  "description": "The URL of the tool provider. Not required to be unique, must be a complete and valid URL. Maximum length is 1024 characters, BAD_REQUEST error with message is returned if greater than 1024 characters or incomplete URL.",
+                  "maxLength": 1024
+                },
+                "key": {
+                  "type": "string"
+                },
+                "secret": {
+                  "type": "string"
+                },
+                "authorId": {
+                  "type": "string",
+                  "description": "Id of the creator of the placement\n\n**Deprecated**: since 3900.0 not used"
+                },
+                "instructorCreated": {
+                  "type": "boolean",
+                  "description": "Whether an instructor created the placement or not (otherwise admin)\n\n**Deprecated**: since 3900.0 not used"
+                },
+                "allowStudents": {
+                  "type": "boolean",
+                  "description": "Whether the course tool is visible by students, or only to non-students (e.g. instructors). Defaults to true, allowing students to see the tool."
+                },
+                "allowGrading": {
+                  "type": "boolean",
+                  "description": "Whether this placement can accept grades from the tool provider and a grade column can be created for it. This only applies to Enum[Type]#`ContentHandler` types. All others don't support grading and will be set to false."
+                },
+                "availability": {
+                  "type": "object",
+                  "description": "Settings controlling availability of the placement.",
+                  "title": "Availability",
+                  "properties": {
+                    "available": {
+                      "type": "string",
+                      "description": "Whether the placement is available within the system.\n\n\n| Type      | Description\n | --------- | --------- |\n| Yes |  |\n| No |  |\n",
+                      "enum": [
+                        "Yes",
+                        "No"
+                      ]
+                    }
+                  }
+                },
+                "launchInNewWindow": {
+                  "type": "boolean",
+                  "description": "Whether this placement link should be opened in a new window or not."
+                },
+                "customParameters": {
+                  "type": "object",
+                  "example": {
+                    "key1": "value1",
+                    "key2": "value2"
+                  },
+                  "description": "Custom launch parameters for the tool.",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "$ref": "#/parameters/fields"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/LTIPlacement"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/RestException"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/RestException"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/RestException"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/RestException"
+            }
+          }
+        }
+      }
+    }
+  }
+}
